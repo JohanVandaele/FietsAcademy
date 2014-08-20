@@ -21,7 +21,7 @@ public class JPAFilter implements Filter
 {
 	// Deze variabele is de EnityManagerFactory. Een static variabele blijft in RAM gedurende de levensduur van de website.
 	// Je maakt een EntityManagerFactory object met de static Persistence method createEntityManagerFactory. Je geeft de name mee van het element persistence-unit uit persistence.xml.
-	private static final EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("allesvoordekeuken");
+	private static final EntityManagerFactory entityManagerFactory=Persistence.createEntityManagerFactory("fietsacademy");
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
