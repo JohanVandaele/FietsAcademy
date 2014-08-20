@@ -2,6 +2,7 @@ package be.vdab.filters;
 
 import java.io.IOException;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.Filter;
@@ -30,6 +31,11 @@ public class JPAFilter implements Filter
 		// Elke JSP zal in ${contextPath} de context path van de website kunnen lezen. Die bevat bij ons de String /fietsacademy
 		context.setAttribute("contextPath", context.getContextPath());
 	}
+
+	public static EntityManager getEntityManager()
+	{
+		return entityManagerFactory.createEntityManager();
+	}	
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,FilterChain chain) throws ServletException, IOException
