@@ -1,13 +1,13 @@
 package be.vdab.dao;
 
-import javax.persistence.EntityManager;
+//import javax.persistence.EntityManager;
 
 import be.vdab.entities.Docent;
 //import be.vdab.filters.JPAFilter;
 
 // enkele imports ...
 
-public class DocentDAO
+public class DocentDAO extends AbstractDAO
 {
 //	public Docent read(long id)
 //	{
@@ -27,23 +27,30 @@ public class DocentDAO
 //		}
 //	}
 
-	public Docent read(long id, EntityManager entityManager)
+//	public Docent read(long id, EntityManager entityManager)
+	public Docent read(long id)
 	{
-		return entityManager.find(Docent.class, id);
+		//return entityManager.find(Docent.class, id);
+		return getEntityManager().find(Docent.class, id);
 	}
 	
-	public void create(Docent docent, EntityManager entityManager)
+//	public void create(Docent docent, EntityManager entityManager)
+	public void create(Docent docent)
 	{
-		entityManager.persist(docent);
+		//entityManager.persist(docent);
+		getEntityManager().persist(docent);
 	}	
 
-	public void delete(long id, EntityManager entityManager)
+//	public void delete(long id, EntityManager entityManager)
+	public void delete(long id)
 	{
-		Docent docent = entityManager.find(Docent.class, id);
+		//Docent docent = entityManager.find(Docent.class, id);
+		Docent docent = getEntityManager().find(Docent.class, id);
 		
 		if (docent != null)
 		{
-			entityManager.remove(docent);
+			//entityManager.remove(docent);
+			getEntityManager().remove(docent);
 		}
 	}
 }

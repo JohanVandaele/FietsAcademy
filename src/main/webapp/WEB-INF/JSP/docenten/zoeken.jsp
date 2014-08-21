@@ -40,6 +40,14 @@
 			<form action='${verwijderURL}' method='post'>
 				<input type='submit' value='Verwijderen'>
 			</form>
+
+			<c:url value='/docenten/opslag.htm' var='opslagURL'>
+				<c:param name='id' value='${docent.id}' />
+			</c:url>
+			
+			<a href='${opslagURL}' class='knop'>
+				<input type="button" value='Opslag'>
+			</a>
 		</c:if>
 	</body>
 </html>
