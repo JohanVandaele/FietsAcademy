@@ -6,9 +6,13 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import be.vdab.enums.Geslacht;
 
 // enkele imports (vooral uit javax.persistence) ...
 
@@ -38,6 +42,9 @@ public class Docent implements Serializable
 	private String familienaam;
 	private BigDecimal wedde;
 	private long rijksRegisterNr;
+
+	@Enumerated(EnumType.STRING)	// Je geeft zo aan dat bij de variabele een varchar kolom hoort
+	private Geslacht geslacht;
 
 	// Je tikt @Transient voor een private variabele als die private variabele geen bijbehorende kolom heeft in de database table.
 	
@@ -106,5 +113,10 @@ public class Docent implements Serializable
 	public String getNaam()
 	{
 		return voornaam + ' ' + familienaam;
+	}
+
+	public String getGeslacht()
+	{
+		return geslacht.toString();
 	}
 }

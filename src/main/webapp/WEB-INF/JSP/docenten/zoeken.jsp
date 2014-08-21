@@ -27,7 +27,9 @@
 		</c:if>
 
 		<c:if test='${not empty docent}'>
-			${docent.naam}, wedde: &euro; <fmt:formatNumber value='${docent.wedde}'/>
+			${docent.naam}
+			, wedde: &euro; <fmt:formatNumber value='${docent.wedde}'/>
+			${docent.geslacht == 'MAN' ? '&#x2642;' : '&#x2640;'}
 		</c:if>
 	</body>
 </html>
