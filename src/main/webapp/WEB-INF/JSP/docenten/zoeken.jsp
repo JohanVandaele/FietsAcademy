@@ -30,6 +30,16 @@
 			${docent.naam}
 			, wedde: &euro; <fmt:formatNumber value='${docent.wedde}'/>
 			${docent.geslacht == 'MAN' ? '&#x2642;' : '&#x2640;'}
+
+			<h2>Acties</h2>
+			
+			<c:url value='/docenten/verwijderen.htm' var='verwijderURL'>
+				<c:param name='id' value='${docent.id}'/>
+			</c:url>
+			
+			<form action='${verwijderURL}' method='post'>
+				<input type='submit' value='Verwijderen'>
+			</form>
 		</c:if>
 	</body>
 </html>
