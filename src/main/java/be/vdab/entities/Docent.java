@@ -75,19 +75,9 @@ public class Docent implements Serializable
 		return voornaam;
 	}
 
-	public void setVoornaam(String voornaam)
-	{
-		this.voornaam = voornaam;
-	}
-
 	public String getFamilienaam()
 	{
 		return familienaam;
-	}
-
-	public void setFamilienaam(String familienaam)
-	{
-		this.familienaam = familienaam;
 	}
 
 	public BigDecimal getWedde()
@@ -95,19 +85,9 @@ public class Docent implements Serializable
 		return wedde;
 	}
 
-	public void setWedde(BigDecimal wedde)
-	{
-		this.wedde = wedde;
-	}
-
 	public long getRijksRegisterNr()
 	{
 		return rijksRegisterNr;
-	}
-
-	public void setRijksRegisterNr(long rijksRegisterNr)
-	{
-		this.rijksRegisterNr = rijksRegisterNr;
 	}
 
 	public String getNaam()
@@ -118,5 +98,92 @@ public class Docent implements Serializable
 	public String getGeslacht()
 	{
 		return geslacht.toString();
+	}
+
+	public Docent(String voornaam, String familienaam, BigDecimal wedde,Geslacht geslacht, long rijksRegisterNr)
+	{
+		setVoornaam(voornaam);
+		setFamilienaam(familienaam);
+		setWedde(wedde);
+		setGeslacht(geslacht);
+		setRijksRegisterNr(rijksRegisterNr);
+	}
+	
+	// default constructor is vereiste voor JPA
+	protected Docent()
+	{
+	}
+
+	public static boolean isVoornaamValid(String voornaam)
+	{
+		return voornaam != null && ! voornaam.isEmpty();
+	}
+	
+	public static boolean isFamilienaamValid(String familienaam)
+	{
+		return familienaam != null && ! familienaam.isEmpty();
+	}
+	
+	public static boolean isWeddeValid(BigDecimal wedde)
+	{
+		return wedde != null && wedde.compareTo(BigDecimal.ZERO) >= 0;
+	}
+	
+	public static boolean isRijksRegisterNrValid(long rijksRegisterNr)
+	{
+		long getal = rijksRegisterNr / 100;
+		
+		if (rijksRegisterNr / 1_000_000_000 < 50)
+		{
+			getal += 2_000_000_000;
+		}
+
+		//return rijksRegisterNr % 100 == 97 - getal % 97;
+		return true;
+	}
+	
+	public void setVoornaam(String voornaam)
+	{
+		if (! isVoornaamValid(voornaam))
+		{
+			throw new IllegalArgumentException();
+		}
+		
+		this.voornaam = voornaam;
+	}
+	
+	public void setFamilienaam(String familienaam)
+	{
+		if (! isFamilienaamValid(familienaam))
+		{
+			throw new IllegalArgumentException();
+		}
+		
+		this.familienaam = familienaam;
+	}
+	
+	public void setWedde(BigDecimal wedde)
+	{
+		if (! isWeddeValid(wedde))
+		{
+			throw new IllegalArgumentException();
+		}
+		
+		this.wedde = wedde;
+	}
+	
+	public void setGeslacht(Geslacht geslacht)
+	{
+		this.geslacht = geslacht;
+	}
+	
+	public void setRijksRegisterNr(long rijksRegisterNr)
+	{
+		if (! isRijksRegisterNrValid(rijksRegisterNr))
+		{
+			throw new IllegalArgumentException();
+		}
+		
+		this.rijksRegisterNr = rijksRegisterNr;
 	}
 }
