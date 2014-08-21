@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 //import javax.persistence.EntityManager;
 
+import java.util.List;
+
 import be.vdab.dao.DocentDAO;
 import be.vdab.entities.Docent;
 //import be.vdab.filters.JPAFilter;
@@ -112,8 +114,14 @@ public class DocentService
 		docentDAO.commit();
 	}
 
-	public Iterable<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot)
+//	public Iterable<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot)
+//	{
+//		return docentDAO.findByWeddeBetween(van, tot);
+//	}
+	
+	// Je geeft de verzameling als List terug: je hebt in de servlet ook het aantal docenten nodig
+	public List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot, int vanafRij, int aantalRijen)
 	{
-		return docentDAO.findByWeddeBetween(van, tot);
+		return docentDAO.findByWeddeBetween(van,tot, vanafRij,aantalRijen);
 	}
 }

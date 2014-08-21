@@ -59,6 +59,26 @@
 					</c:forEach>
 				</tbody>
 			</table>
+			
+			<c:if test='${vanafRij != 0}'>
+				<c:url value='' var='vorigePaginaURL'>
+					<c:param name='van' value='${param.van}'/>
+					<c:param name='tot' value='${param.tot}'/>
+					<c:param name='vanafRij' value='${vanafRij - aantalRijen}'/>
+				</c:url>
+
+				<a href="<c:out value='${vorigePaginaURL}'/>" title='vorige pagina'	class='pagineren'>&larr;</a>
+			</c:if>
+
+			<c:if test='${empty laatstePagina}'>
+				<c:url value='' var='volgendePaginaURL'>
+					<c:param name='van' value='${param.van}'/>
+					<c:param name='tot' value='${param.tot}'/>
+					<c:param name='vanafRij' value='${vanafRij + aantalRijen}'/>
+				</c:url>
+
+				<a href="<c:out value='${volgendePaginaURL}'/>" title='volgende pagina'	class='pagineren'>&rarr;</a>
+			</c:if>			
 		</c:if>
 	</body>
 </html>
