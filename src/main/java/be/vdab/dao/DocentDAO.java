@@ -2,6 +2,8 @@ package be.vdab.dao;
 
 //import javax.persistence.EntityManager;
 
+import java.math.BigDecimal;
+
 import be.vdab.entities.Docent;
 //import be.vdab.filters.JPAFilter;
 
@@ -52,5 +54,23 @@ public class DocentDAO extends AbstractDAO
 			//entityManager.remove(docent);
 			getEntityManager().remove(docent);
 		}
+	}
+	
+	public Iterable<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot)
+	{
+		// je gebruikt van en tot later ...
+		//return getEntityManager().createQuery("select d from Docent d", Docent.class).getResultList();
+		//return getEntityManager().createQuery("select d from Docent d order by d.wedde desc, d.voornaam, d.familienaam", Docent.class).getResultList();
+		//return getEntityManager().createQuery("select d from Docent d where d.wedde between 2000 and 2200 order by d.wedde desc, d.voornaam, d.familienaam", Docent.class).getResultList();
+		
+//		return getEntityManager().createQuery("select d from Docent d where d.wedde between ? and ? order by d.wedde,d.id", Docent.class)
+//				.setParameter(1, van)
+//				.setParameter(2, tot)
+//				.getResultList();
+		
+		return getEntityManager().createQuery("select d from Docent d where d.wedde between :van and :tot order by d.wedde,d.id", Docent.class)
+				.setParameter("van", van)
+				.setParameter("tot", tot)
+				.getResultList();
 	}
 }

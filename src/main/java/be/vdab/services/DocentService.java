@@ -111,4 +111,9 @@ public class DocentService
 		docentDAO.read(id).opslag(percentage);
 		docentDAO.commit();
 	}
+
+	public Iterable<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot)
+	{
+		return docentDAO.findByWeddeBetween(van, tot);
+	}
 }
