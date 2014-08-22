@@ -8,6 +8,8 @@ import java.util.List;
 
 import be.vdab.dao.DocentDAO;
 import be.vdab.entities.Docent;
+import be.vdab.valueobjects.AantalDocentenPerWedde;
+import be.vdab.valueobjects.VoornaamEnId;
 //import be.vdab.filters.JPAFilter;
 
 // enkele imports ...
@@ -123,5 +125,25 @@ public class DocentService
 	public List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot, int vanafRij, int aantalRijen)
 	{
 		return docentDAO.findByWeddeBetween(van,tot, vanafRij,aantalRijen);
+	}
+	
+//	public Iterable<String> findVoornamen()
+//	{
+//		return docentDAO.findVoornamen();
+//	}
+	
+	public Iterable<VoornaamEnId> findVoornamen()
+	{
+		return docentDAO.findVoornamen();
+	}
+	
+	public BigDecimal findMaxWedde()
+	{
+		return docentDAO.findMaxWedde();
+	}
+	
+	public Iterable<AantalDocentenPerWedde> findAantalDocentenPerWedde()
+	{
+		return docentDAO.findAantalDocentenPerWedde();
 	}
 }

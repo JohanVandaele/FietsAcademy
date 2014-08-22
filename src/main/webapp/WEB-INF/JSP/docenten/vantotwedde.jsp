@@ -31,7 +31,8 @@
 			<label>
 				Tot:
 				<span>${fouten.tot}</span>
-				<input name='tot' type='number' value='${param.tot}' min='0' step='0.01'required>
+<%-- 				<input name='tot' type='number' value='${param.tot}' min='0' step='0.01'required> --%>
+				<input name='tot' type='number' value='${empty tot ? param.tot : tot}' min='0' step='0.01'required>
 			</label>
 			
 			<input type='submit' value='Zoeken'>
@@ -40,6 +41,8 @@
 		<c:if test="${not empty param and empty fouten and empty docenten}">
 			Geen docenten gevonden
 		</c:if>
+
+		<p/>${vanafRij} - ${laatstePagina}<p/>
 
 		<c:if test="${not empty docenten}">
 			<table>
@@ -80,5 +83,7 @@
 				<a href="<c:out value='${volgendePaginaURL}'/>" title='volgende pagina'	class='pagineren'>&rarr;</a>
 			</c:if>			
 		</c:if>
+
+		<p/>${vanafRij} - ${laatstePagina}<p/>
 	</body>
 </html>

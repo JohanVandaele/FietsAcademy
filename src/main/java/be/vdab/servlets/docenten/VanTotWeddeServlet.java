@@ -32,7 +32,11 @@ public class VanTotWeddeServlet extends HttpServlet
 //		request.setAttribute("docenten",docentService.findByWeddeBetween(null, null));
 //		request.getRequestDispatcher(VIEW).forward(request, response);
 
-		if (request.getQueryString() != null)
+		if (request.getQueryString() == null)	// First doGet()
+		{
+			request.setAttribute("tot", docentService.findMaxWedde());
+		}
+		else
 		{
 			Map<String, String> fouten = new HashMap<>();
 		
