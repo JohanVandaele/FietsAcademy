@@ -25,4 +25,16 @@
 			select c from Cursus c where c.naam like :zoals order by c.naam
 		</query>
 	</named-query>	
+
+	<named-query name='Campus.findByGemeente'>
+		<query>
+			select c from Campus c where c.adres.gemeente = :gemeente order by c.naam
+		</query>
+	</named-query>
+		
+	<named-query name='Campus.findAll'> <!-- voor later in de cursus -->
+		<query>
+			select c from Campus c order by c.naam
+		</query>
+	</named-query>
 </entity-mappings>
