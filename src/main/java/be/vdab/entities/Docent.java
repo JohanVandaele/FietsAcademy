@@ -4,16 +4,22 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 //import org.hibernate.annotations.NamedQuery;
-
 import be.vdab.enums.Geslacht;
 
 //@NamedQuery
@@ -59,6 +65,18 @@ public class Docent implements Serializable
 	// @Temporal(TemporalType.DATE) Het kolomtype is Date (de kolom bevat enkel een datum)
 	// @Temporal(TemporalType.TIME) Het kolomtype is Time (de kolom bevat enkel een tijd)
 	// @Temporal(TemporalType.TIMESTAMP) Het kolomtype is DateTime (de kolom bevat een datum en een tijd)	
+
+	// Je tikt @ElementCollection bij een variabele die een verzameling value objecten voorstelt.
+	@ElementCollection
+	// Je geeft met @CollectionTable de naam van de table (docentenbijnamen) aan die de value objecten bevat.
+	@CollectionTable	(	 name = "docentenbijnamen" 
+							// Je geeft met @JoinColumn een kolom in deze table aan.
+							// Je kiest de foreign key kolom die verwijst naar primary kolom
+							// in de table (docenten) die hoort bij de huidige entity class (Docent).
+							// Je vult met deze @JoinColumn de parameter joinColumns van @CollectionTable.
+							,joinColumns = @JoinColumn(name = "docentid"))
+	@Column(name = "Bijnaam")
+	private Set<String> bijnamen;
 	
 	public void opslag(BigDecimal percentage)
 	{
@@ -114,6 +132,8 @@ public class Docent implements Serializable
 		setWedde(wedde);
 		setGeslacht(geslacht);
 		setRijksRegisterNr(rijksRegisterNr);
+	
+		bijnamen = new HashSet<>();
 	}
 	
 	// default constructor is vereiste voor JPA
@@ -121,6 +141,26 @@ public class Docent implements Serializable
 	{
 	}
 
+	// Bijnamen
+	public void addBijnaam(String bijnaam)
+	{
+		bijnamen.add(bijnaam);
+	}	
+	
+	public void removeBijnaam(String bijnaam)
+	{
+		bijnamen.remove(bijnaam);
+	}
+
+	//
+	public Set<String> getBijnamen()
+	{
+		// Je kan per ongeluk de bijnamen toevoegen of verwijderen
+		//return bijnamen;
+		// Verhinderd per ongeluk de bijnamen toe tevoegen of te verwijderen : UnsupportedOperationException
+		return Collections.unmodifiableSet(bijnamen);
+	}	
+	
 	public static boolean isVoornaamValid(String voornaam)
 	{
 		return voornaam != null && ! voornaam.isEmpty();

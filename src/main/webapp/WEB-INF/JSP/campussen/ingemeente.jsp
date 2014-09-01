@@ -31,6 +31,14 @@
 			<ul>
 				<c:forEach items='${campussen}' var='campus'>
 					<li>${campus.naam}: ${campus.adres.straat} ${campus.adres.huisNr}</li>
+					
+					<dl>
+						<!-- Je spreekt hier voor het eerst de telefoonnummers aan. JPA leest die op dit moment met een select opdracht naar de table campussentelefoonnrs. -->
+						<c:forEach items="${campus.telefoonNrs}" var="telefoonNr">
+							<dt>${telefoonNr.fax ? "Fax" : "Telefoon"}</dt>
+							<dd>${telefoonNr.nummer} ${telefoonNr.opmerking}</dd>
+						</c:forEach>
+					</dl>
 				</c:forEach>
 			</ul>
 		</c:if>

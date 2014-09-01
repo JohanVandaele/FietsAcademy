@@ -1,4 +1,4 @@
-package be.vdab.valueobjects;
+package be.vdab.valueobjects; // Getters, geen Setters
 
 import java.io.Serializable;
 

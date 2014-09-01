@@ -6,10 +6,10 @@ public class CampusDAO extends AbstractDAO
 {
 	public Iterable<Campus> findByGemeente(String gemeente)
 	{
-	return getEntityManager()
-		.createNamedQuery("Campus.findByGemeente", Campus.class)
-		.setParameter("gemeente", gemeente)
-		.getResultList();
+		return getEntityManager()
+			.createNamedQuery("Campus.findByGemeente", Campus.class)
+			.setParameter("gemeente", gemeente)
+			.getResultList();
 	}
 	
 	public Iterable<Campus> findAll()
