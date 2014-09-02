@@ -2,15 +2,14 @@ package be.vdab.services;
 
 import java.math.BigDecimal;
 
-//import javax.persistence.EntityManager;
-
-import java.util.List;
-
 import be.vdab.dao.DocentDAO;
 import be.vdab.entities.Docent;
+import be.vdab.exceptions.DocentBestaatAlException;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
 import be.vdab.valueobjects.VoornaamEnId;
 //import be.vdab.filters.JPAFilter;
+//import javax.persistence.EntityManager;
+import java.util.List;
 
 // enkele imports ...
 
@@ -38,30 +37,42 @@ public class DocentService
 		return docentDAO.read(id);
 	}
 	
+//	public void create(Docent docent)
+//	{
+////		EntityManager entityManager = JPAFilter.getEntityManager();
+////		
+////		try
+////		{
+////			entityManager.getTransaction().begin();
+////			docentDAO.create(docent, entityManager);
+////			entityManager.getTransaction().commit();
+////		}
+////		catch (RuntimeException ex)
+////		{
+////			entityManager.getTransaction().rollback();
+////			throw ex;
+////		}
+////		finally
+////		{
+////			entityManager.close();
+////		}
+//		
+//		docentDAO.beginTransaction();
+//		docentDAO.create(docent);
+//		docentDAO.commit();
+//	}	
+	
 	public void create(Docent docent)
 	{
-//		EntityManager entityManager = JPAFilter.getEntityManager();
-//		
-//		try
-//		{
-//			entityManager.getTransaction().begin();
-//			docentDAO.create(docent, entityManager);
-//			entityManager.getTransaction().commit();
-//		}
-//		catch (RuntimeException ex)
-//		{
-//			entityManager.getTransaction().rollback();
-//			throw ex;
-//		}
-//		finally
-//		{
-//			entityManager.close();
-//		}
+		if (docentDAO.findByRijksRegisterNr(docent.getRijksRegisterNr()) != null)
+		{
+			throw new DocentBestaatAlException();
+		}
 		
 		docentDAO.beginTransaction();
 		docentDAO.create(docent);
 		docentDAO.commit();
-	}	
+	}
 
 	public void delete(long id)
 	{

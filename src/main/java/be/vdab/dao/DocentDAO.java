@@ -5,6 +5,8 @@ package be.vdab.dao;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.NoResultException;
+
 import be.vdab.entities.Docent;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
 //import be.vdab.filters.JPAFilter;
@@ -118,5 +120,21 @@ public class DocentDAO extends AbstractDAO
 		getEntityManager().createNamedQuery("Docent.algemeneOpslag")
 			.setParameter("factor", factor)
 			.executeUpdate();
+	}
+	
+	public Docent findByRijksRegisterNr(long rijksRegisterNr)
+	{
+		try
+		{
+			return getEntityManager()
+				.createNamedQuery("Docent.findByRijksRegisterNr", Docent.class)
+				.setParameter("rijksRegisterNr", rijksRegisterNr)
+				.getSingleResult();
+		}
+		catch (NoResultException ex)
+		{
+			// Als de method getSingleResult geen record vindt, werpt ze een NoResultException. Je vangt deze fout op en je geeft null terug.
+			return null;
+		}
 	}
 }

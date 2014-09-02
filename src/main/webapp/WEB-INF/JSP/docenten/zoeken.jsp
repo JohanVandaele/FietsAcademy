@@ -69,6 +69,16 @@
 				};
 			</script>
 
+			<c:if test='${not empty docent.verantwoordelijkheden}'>
+				<h2>Verantwoordelijkheden</h2>
+				
+				<ul>
+					<c:forEach items='${docent.verantwoordelijkheden}' var='verantwoordelijkheid'>
+						<li>${verantwoordelijkheid.naam}</li>
+					</c:forEach>
+				</ul>
+			</c:if>
+
 			<h2>Acties</h2>
 
 			<c:url value='/docenten/verwijderen.htm' var='verwijderURL'>

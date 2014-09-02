@@ -6,6 +6,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
@@ -14,9 +15,12 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 //import org.hibernate.annotations.NamedQuery;
@@ -77,7 +81,23 @@ public class Docent implements Serializable
 							,joinColumns = @JoinColumn(name = "docentid"))
 	@Column(name = "Bijnaam")
 	private Set<String> bijnamen;
-	
+
+	// ------------
+	// ManyToOne
+	// ------------
+	// Je tikt @ManyToOne bij een variabele die een many-to-one associatie voorstelt.
+	// De foreign key kolom campusId, die bij deze associatie hoort, is in de database
+	// gedefinieerd als verplicht in te vullen. Je plaatst dan de parameter optional op false.
+	// JPA controleert dan voor het toevoegen of wijzigen van een record dat deze kolom wel
+	// degelijk ingevuld wordt en werpt een exception als dit niet het geval is.
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	// De table docenten hoort bij de huidige class Docent.
+	// Je duidt met @JoinColumn de kolom campusid in deze table aan.
+	// Je kiest de foreign key kolom die verwijst naar de table campussen die hoort bij de geassocieerde entity (Campus).	
+	@JoinColumn(name = "campusid")
+	private Campus campus;	
+
+	//
 	public void opslag(BigDecimal percentage)
 	{
 		BigDecimal factor =	BigDecimal.ONE.add(percentage.divide(new BigDecimal(100)));
@@ -85,6 +105,33 @@ public class Docent implements Serializable
 	}
 
 	// Properties
+	public Campus getCampus()
+	{
+		return campus;
+	}
+
+//	public void setCampus(Campus campus)
+//	{
+//		this.campus = campus;
+//	}
+
+	public void setCampus(Campus campus)
+	{
+		if (this.campus != null && this.campus.getDocenten().contains(this))
+		{
+			// als de andere kant nog niet bijgewerkt is
+			this.campus.removeDocent(this); // werk je de andere kant bij
+		}
+
+		this.campus = campus;
+		
+		if (campus != null && ! campus.getDocenten().contains(this))
+		{
+			// als de andere kant nog niet bijgewerkt is
+			campus.addDocent(this); // werk je de andere kant bij
+		}
+	}	
+	
 	public long getId()
 	{
 		return id;
@@ -134,6 +181,7 @@ public class Docent implements Serializable
 		setRijksRegisterNr(rijksRegisterNr);
 	
 		bijnamen = new HashSet<>();
+		verantwoordelijkheden = new LinkedHashSet<>();
 	}
 	
 	// default constructor is vereiste voor JPA
@@ -232,5 +280,55 @@ public class Docent implements Serializable
 		}
 		
 		this.rijksRegisterNr = rijksRegisterNr;
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof Docent))
+		{
+			return false;
+		}
+		
+		return ((Docent)obj).rijksRegisterNr == rijksRegisterNr;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return Long.valueOf(rijksRegisterNr).hashCode();
+	}
+
+	// ----------------
+	// -- ManyToMany --
+	// ----------------
+	// Je tikt @ManyToMany bij een variabele die een many-to-many associatie voorstelt.
+	// Je tikt bij de parameter mappedBy de variabele naam (docenten), die aan de andere associatie kant (Verantwoordelijkheid), de associatie voorstelt.
+	@ManyToMany(mappedBy = "docenten")
+	private Set<Verantwoordelijkheid> verantwoordelijkheden;
+
+	public void addVerantwoordelijkheid(Verantwoordelijkheid verantwoordelijkheid)
+	{
+		verantwoordelijkheden.add(verantwoordelijkheid);
+		
+		if (!verantwoordelijkheid.getDocenten().contains(this))
+		{
+			verantwoordelijkheid.addDocent(this);
+		}
+	}
+
+	public void removeVerantwoordelijkheid(Verantwoordelijkheid verantwoordelijkheid)
+	{
+		verantwoordelijkheden.remove(verantwoordelijkheid);
+		
+		if (verantwoordelijkheid.getDocenten().contains(this))
+		{
+			verantwoordelijkheid.removeDocent(this);
+		}
+	}
+
+	public Set<Verantwoordelijkheid> getVerantwoordelijkheden()
+	{
+		return Collections.unmodifiableSet(verantwoordelijkheden);
 	}
 }
