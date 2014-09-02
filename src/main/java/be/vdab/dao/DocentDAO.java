@@ -5,8 +5,10 @@ package be.vdab.dao;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 
+import be.vdab.entities.Campus;
 import be.vdab.entities.Docent;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
 //import be.vdab.filters.JPAFilter;
@@ -39,6 +41,11 @@ public class DocentDAO extends AbstractDAO
 	{
 		//return entityManager.find(Docent.class, id);
 		return getEntityManager().find(Docent.class, id);
+	}
+
+	public Docent readWithLock(long id)
+	{
+		return getEntityManager().find(Docent.class, id,LockModeType.PESSIMISTIC_WRITE);
 	}
 	
 //	public void create(Docent docent, EntityManager entityManager)
@@ -136,5 +143,13 @@ public class DocentDAO extends AbstractDAO
 			// Als de method getSingleResult geen record vindt, werpt ze een NoResultException. Je vangt deze fout op en je geeft null terug.
 			return null;
 		}
+	}
+
+	public Iterable<Docent> findBestBetaaldeVanEenCampus(Campus campus)
+	{
+		return getEntityManager()
+		.createNamedQuery("Docent.findBestBetaaldeVanEenCampus", Docent.class)
+		.setParameter("campus", campus)
+		.getResultList();
 	}
 }

@@ -1,15 +1,21 @@
 package be.vdab.services;
 
 import java.math.BigDecimal;
-
-import be.vdab.dao.DocentDAO;
-import be.vdab.entities.Docent;
-import be.vdab.exceptions.DocentBestaatAlException;
-import be.vdab.valueobjects.AantalDocentenPerWedde;
-import be.vdab.valueobjects.VoornaamEnId;
 //import be.vdab.filters.JPAFilter;
 //import javax.persistence.EntityManager;
 import java.util.List;
+
+import javax.persistence.OptimisticLockException;
+import javax.persistence.RollbackException;
+
+import be.vdab.dao.CampusDAO;
+import be.vdab.dao.DocentDAO;
+import be.vdab.entities.Docent;
+import be.vdab.exceptions.DocentBestaatAlException;
+import be.vdab.exceptions.DocentNietGevondenException;
+import be.vdab.exceptions.RecordAangepastException;
+import be.vdab.valueobjects.AantalDocentenPerWedde;
+import be.vdab.valueobjects.VoornaamEnId;
 
 // enkele imports ...
 
@@ -17,7 +23,8 @@ public class DocentService
 {
 	// DocentService gebruikt DocentDAO.
 	private final DocentDAO docentDAO = new DocentDAO();
-
+	private final CampusDAO campusDAO = new CampusDAO();
+	
 	public Docent read(long id)
 	{
 //		// Je vraagt een EntityManager aan de servlet filter JPAFilter
@@ -100,33 +107,63 @@ public class DocentService
 		docentDAO.commit();
 	}
 
+//	public void opslag(long id, BigDecimal percentage)
+//	{
+////		EntityManager entityManager = JPAFilter.getEntityManager();
+////		
+////		try
+////		{
+////			entityManager.getTransaction().begin();
+////			docentDAO.read(id, entityManager).opslag(percentage);
+////			// JPA stuurt bij de commit op de transactie een update statement naar de database en wijzigt hiermee het record dat bij de gewijzigde entity hoort.
+////			entityManager.getTransaction().commit();
+////			//entityManager.getTransaction().rollback();
+////		}
+////		catch (RuntimeException ex)
+////		{
+////			entityManager.getTransaction().rollback();
+////			throw ex;
+////		}
+////		finally
+////		{
+////			entityManager.close();
+////		}
+//		
+//		docentDAO.beginTransaction();
+//		//docentDAO.read(id).opslag(percentage);
+//		docentDAO.readWithLock(id).opslag(percentage);
+//		docentDAO.commit();
+//	}
+
 	public void opslag(long id, BigDecimal percentage)
 	{
-//		EntityManager entityManager = JPAFilter.getEntityManager();
-//		
-//		try
-//		{
-//			entityManager.getTransaction().begin();
-//			docentDAO.read(id, entityManager).opslag(percentage);
-//			// JPA stuurt bij de commit op de transactie een update statement naar de database en wijzigt hiermee het record dat bij de gewijzigde entity hoort.
-//			entityManager.getTransaction().commit();
-//			//entityManager.getTransaction().rollback();
-//		}
-//		catch (RuntimeException ex)
-//		{
-//			entityManager.getTransaction().rollback();
-//			throw ex;
-//		}
-//		finally
-//		{
-//			entityManager.close();
-//		}
-		
 		docentDAO.beginTransaction();
-		docentDAO.read(id).opslag(percentage);
-		docentDAO.commit();
-	}
-
+		// Je gebruikt bij optimistic record locking de method find van EntityManager zonder de derde parameter.
+		Docent docent = docentDAO.read(id);
+		
+		if (docent == null)
+		{
+			throw new DocentNietGevondenException();
+		}
+		
+		docent.opslag(percentage);
+		
+		try
+		{
+			docentDAO.commit();
+		}
+		// Als een andere gebruiker het record ondertussen wijzigde, werpt JPA een RollbackException bij een commit van de transactie.
+		catch (RollbackException ex)
+		{
+			// Als de method getCause van deze RollbackException een object van het type OptimisticLockException bevat,
+			// is de oorzaak van de exception dat een andere gebruiker het record wijzigde. Als de method getCause een ander type object bevat, is de rollback veroorzaakt door een andere fout in de database.
+			if (ex.getCause() instanceof OptimisticLockException)
+			{
+				throw new RecordAangepastException();
+			}
+		}
+	}	
+	
 //	public Iterable<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot)
 //	{
 //		return docentDAO.findByWeddeBetween(van, tot);
@@ -185,5 +222,10 @@ public class DocentService
 		}
 		
 		docentDAO.commit();
+	}
+	
+	public Iterable<Docent> findBestBetaaldeVanEenCampus(long id)
+	{
+		return docentDAO.findBestBetaaldeVanEenCampus(campusDAO.read(id));
 	}
 }

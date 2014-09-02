@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -22,6 +23,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 //import org.hibernate.annotations.NamedQuery;
 import be.vdab.enums.Geslacht;
@@ -97,6 +99,11 @@ public class Docent implements Serializable
 	@JoinColumn(name = "campusid")
 	private Campus campus;	
 
+	// Je tikt @Version voor de private variabele die hoort bij de kolom die JPA kan gebruiken voor de versie controle.
+	@Version
+	//private long versie;	
+	private Timestamp versie;	
+	
 	//
 	public void opslag(BigDecimal percentage)
 	{
